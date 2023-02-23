@@ -16,7 +16,7 @@ def generate_unique_code():
         
 
 class Room(models.Model):
-    code = models.CharField(max_length=8, unique=True)
+    code = models.CharField(max_length=8, unique=True, default=generate_unique_code)
     #host = models.ForeignKey(Host, models.CASCADE, null=True)  #Transform later into a different Table that can have One To Many relationship
     host = models.CharField(max_length=50, unique=True)
     guest_pause_permission = models.BooleanField(default=False)

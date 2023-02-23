@@ -7,7 +7,7 @@ export default function Home() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<p>DUPA routing</p>} />
+                <Route path="/" element={<p>Home</p>} />
                 <Route path="/join-room" element={<JoinRoom />} />
                 <Route path="/create-room" element={<CreateRoom />} />
             </Routes>

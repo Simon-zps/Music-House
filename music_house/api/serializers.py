@@ -6,7 +6,7 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         fields = ('__all__')
 
-class CreateRoomSerializer(serializers.Serializer):
+class CreateRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['guest_pause_permission','votes_to_skip']

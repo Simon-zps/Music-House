@@ -8,6 +8,7 @@ import string, random
 
 def generate_unique_code():
     length = 6
+    code = ''.join(random.choices(string.ascii_uppercase, k=length))
 
     while Room.objects.filter(code=code).exists():
         code = ''.join(random.choices(string.ascii_uppercase, k=length))

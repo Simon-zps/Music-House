@@ -37,5 +37,15 @@ def createRoom(request):
             room = Room(host=host, votes_to_skip=votes_to_skip, guest_pause_permission=guest_pause_permission)
             room.save()
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+def getRoom(request, code):
+    room = Room.objects.filter(code=code).first()
+    if room:
+        serializer = RoomSerializer(room).data
+        serializer['is_host'] = room.host == request.session.session_key
+        return Response(serializer)
+    
+    return Response(serializer)

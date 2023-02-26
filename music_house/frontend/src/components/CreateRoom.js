@@ -31,6 +31,8 @@ export default function CreateRoom() {
         .then(response => response.json())
         .then(data => {
             console.log("Data:", data)
+            const redirectUrl = `/room/${data.code}`;
+            window.location.href = redirectUrl;
         })
     }
 

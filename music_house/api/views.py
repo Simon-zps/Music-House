@@ -13,6 +13,17 @@ def getRooms(request):
     return Response(serializer)
 
 
+@api_view(['GET'])
+def getRoom(request, code):
+    room = Room.objects.filter(code=code).first()
+    if room:
+        serializer = RoomSerializer(room).data
+        serializer['is_host'] = room.host == request.session.session_key
+        return Response(serializer)
+    
+    return Response({"Something went wrong":"No such room"})
+
+
 @api_view(['POST'])
 def createRoom(request):
     if 'session_key' not in request.session:
@@ -40,12 +51,13 @@ def createRoom(request):
         return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
-def getRoom(request, code):
+@api_view(['POST'])
+def joinRoom(request, code):
+    if 'session_key' not in request.session:
+        request.session.create()
+
     room = Room.objects.filter(code=code).first()
     if room:
-        serializer = RoomSerializer(room).data
-        serializer['is_host'] = room.host == request.session.session_key
-        return Response(serializer)
-    
-    return Response(serializer)
+        return Response({"message":"You joined a room"})
+
+    return Response({"message":"No such room"})

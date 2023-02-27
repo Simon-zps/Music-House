@@ -60,4 +60,4 @@ def joinRoom(request, code):
     if room:
         return Response({"message":"You joined a room"})
 
-    return Response({"message":"No such room"})
+    return Response({"message":"No such room"}, status=status.HTTP_400_BAD_REQUEST)

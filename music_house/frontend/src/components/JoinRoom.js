@@ -11,6 +11,11 @@ export default function JoinRoom() {
         setCode(e.target.value);
     }
 
+    const [error, setError] = useState("")
+    function handleError(e) {
+        setError(e.target.value);
+    }
+
     function join() {
         fetch(`/api/join-room/${code}`,{
             method:"POST",
@@ -19,14 +24,23 @@ export default function JoinRoom() {
             },
             body:JSON.stringify({
                 code:code,
+                error:error,
             })
     })
-    .then(response => response.json())
-    .then(data =>{
-        console.log("Data", data)
-        const redirectUrl = `/room/${code}`;
-        window.location.href = redirectUrl;
+    .then((response) => {
+        if (response.ok) {
+            window.location.href = `/room/${code}`;
+        }else{
+            setError("Wrong code");
+        }
+        return response.json()
     })
+    .then(data =>{
+        console.log("Data", data);
+    })
+    .catch(error => {
+        console.error("Wrong code", error);
+    });
     }
 
     return (
@@ -38,7 +52,7 @@ export default function JoinRoom() {
             </Grid>
 
             <Grid item xs={12} >
-                <TextField label="Code" placeholder="Enter code" value={code} variant="outlined" onChange={handleCodeInput} />
+                <TextField error={error} helperText={error} label="Code" placeholder="Enter code" value={code} variant="outlined" onChange={handleCodeInput} />
             </Grid>
 
             <Grid item xs={12}>

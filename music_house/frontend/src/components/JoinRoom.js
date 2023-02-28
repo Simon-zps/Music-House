@@ -17,7 +17,7 @@ export default function JoinRoom() {
     }
 
     function join() {
-        fetch(`/api/join-room/${code}`,{
+        fetch(`/api/room/${code}`,{
             method:"POST",
             headers: {
                 'Content-Type':'application/json'

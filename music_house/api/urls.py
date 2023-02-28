@@ -3,8 +3,8 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('', views.getRooms, name='getRooms'),
-    path('create-room', views.createRoom, name='createRoom'),
-    path('room/<str:code>', views.getRoom, name='getRoom'),
-    path('join-room/<str:code>', views.joinRoom, name="joinRoom"),
+    path('', views.get_rooms, name='getRooms'),
+    path('create-room', views.create_room, name='createRoom'),
+    path('room/<str:code>', views.get_room, name='getRoom'),
+    path('user-in-room', views.is_user_in_room, name="isUserInRoom"),
 ]

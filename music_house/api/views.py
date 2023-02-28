@@ -4,28 +4,29 @@ from .serializers import RoomSerializer, CreateRoomSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from django.http import JsonResponse
 
 @api_view(['GET'])
-def getRooms(request):
+def get_rooms(request):
     rooms = Room.objects.all()
     serializer = RoomSerializer(rooms, many=True).data
     return Response(serializer)
 
 
-@api_view(['GET'])
-def getRoom(request, code):
+@api_view(['GET', 'POST'])
+def get_room(request, code):
     room = Room.objects.filter(code=code).first()
     if room:
         serializer = RoomSerializer(room).data
         serializer['is_host'] = room.host == request.session.session_key
+        request.session['code'] = code
         return Response(serializer)
     
-    return Response({"Something went wrong":"No such room"})
+    return Response({"Something went wrong":"No such room"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
-def createRoom(request):
+def create_room(request):
     if 'session_key' not in request.session:
         request.session.create()
 
@@ -48,9 +49,21 @@ def createRoom(request):
             room = Room(host=host, votes_to_skip=votes_to_skip, guest_pause_permission=guest_pause_permission)
             room.save()
 
-        return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
+        request.session['code'] = room.code
+        return Response(RoomSerializer(room).data)
 
 
+@api_view(['GET'])
+def is_user_in_room(request):
+    if 'session_key' not in request.session:
+        request.session.create()
+
+    data = {
+        'code':request.session.get('code') #As request.session['code'] might raise KeyError :(
+    }
+    return JsonResponse(data)
+
+'''
 @api_view(['POST'])
 def joinRoom(request, code):
     if 'session_key' not in request.session:
@@ -61,3 +74,4 @@ def joinRoom(request, code):
         return Response({"message":"You joined a room"})
 
     return Response({"message":"No such room"}, status=status.HTTP_400_BAD_REQUEST)
+'''

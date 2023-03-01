@@ -63,6 +63,23 @@ def is_user_in_room(request):
     }
     return JsonResponse(data)
 
+
+@api_view(['POST'])
+def leave_room(request, code):
+    if 'session_key' not in request.session:
+        request.session.create()
+
+    if 'code' in request.session and request.session['code'] == code:
+        request.session.pop('code')
+        room = Room.objects.filter(code=code).first()
+        if room is not None and room.host:
+            room.delete()
+        return Response({"message":"Left room"})
+    else:
+        return Response({"message":"Not in room"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 '''
 @api_view(['POST'])
 def joinRoom(request, code):

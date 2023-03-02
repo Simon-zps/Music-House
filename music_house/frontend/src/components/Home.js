@@ -11,6 +11,25 @@ export default function Home() {
     
     const [code, setCode] = useState(null)
     
+    async function fetchCode() {
+
+        try{
+            const response = await fetch('/api/user-in-room');
+            const data = await response.json();
+            setCode(data.code);
+            console.log(data.code);
+        }catch(e){
+            console.log(e);
+        }
+        
+    }
+
+    useEffect(() => {
+        
+        fetchCode();
+    }, []);
+
+    /** 
     useEffect(() => {
         async function fetchCode() {
             const response = await fetch('/api/user-in-room');
@@ -19,7 +38,11 @@ export default function Home() {
             console.log(data.code);
         }
         fetchCode();
-    }, []);
+    }, []);*/
+
+    function handleChangeCode(newValue) {
+        setCode(newValue);
+    }
 
     //HOC
     function renderHome() {
@@ -51,7 +74,7 @@ export default function Home() {
                 )}
                 <Route path="/join-room" element={<JoinRoom />} /> 
                 <Route path="/create-room" element={<CreateRoom />} />
-                <Route path="/room/:code" element={<Room />} />
+                <Route path="/room/:code" element={<Room code={code} onChange={handleChangeCode}/>} />
             </Routes>
         </Router>
     );

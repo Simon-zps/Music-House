@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { Grid, Button, Typography } from '@material-ui/core';
-export default function Room() {
+export default function Room(props) {
 
     let {code} = useParams();
     const [votesToSkip, setVotesToSkip] = useState(2);
@@ -26,6 +26,26 @@ export default function Room() {
         });
     }, []);
 
+    function handleChangeCode(newValue) {
+        props.onChange(newValue);
+        window.history.pushState({}, "","/");
+    }
+
+    function leaveRoom() {
+        fetch(`/api/leave-room/${code}`,{
+            method:"POST",
+            headers: {
+                'Content-Type':'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            handleChangeCode(data.code);
+            window.location.href = "/";
+        })
+        ;
+    }
+
     return (
         <Grid container spacing={1}>
             <Grid item xs={12} align="center">
@@ -42,7 +62,7 @@ export default function Room() {
             </Grid>
 
             <Grid item xs={12} align="center">
-                <Button variant="contained" color="secondary" to="/" component={Link}>Leave room</Button>
+                <Button variant="contained" color="secondary" onClick={leaveRoom} >Leave room</Button>
             </Grid>
         </Grid>
     );

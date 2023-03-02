@@ -2,9 +2,9 @@ import React from "react";
 import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { Grid, Button, Typography } from '@material-ui/core';
-export default function Room(props) {
+export default function Room() {
 
-    const {code} = useParams();
+    let {code} = useParams();
     const [votesToSkip, setVotesToSkip] = useState(2);
     const [guestPausePermission, setGuestPausePermission] = useState(true);
     const [isHost, setIsHost] = useState(true);
@@ -22,7 +22,7 @@ export default function Room(props) {
             setGuestPausePermission(data.guest_pause_permission);
             setIsHost(data.is_host);
             setVotesToSkip(data.votes_to_skip);
-            console.log(data)
+            console.log(data);
         });
     }, []);
 

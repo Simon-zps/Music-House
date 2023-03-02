@@ -45,7 +45,10 @@ export default function Home() {
     return (
         <Router>
             <Routes>
+            {code ? (
+                <Route path="/" element={<Navigate to={`/room/${code}`}/>} />) : (
                 <Route path="/" element={renderHome()} />
+                )}
                 <Route path="/join-room" element={<JoinRoom />} /> 
                 <Route path="/create-room" element={<CreateRoom />} />
                 <Route path="/room/:code" element={<Room />} />

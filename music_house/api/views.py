@@ -13,7 +13,7 @@ def get_rooms(request):
     return Response(serializer)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def get_room(request, code):
     room = Room.objects.filter(code=code).first()
     if room:
@@ -58,9 +58,9 @@ def is_user_in_room(request):
     if 'session_key' not in request.session:
         request.session.create()
 
-    data = {
-        'code':request.session.get('code') #As request.session['code'] might raise KeyError :(
-    }
+    data = {}
+    if 'code' in request.session:
+        data['code'] = request.session['code']
     return JsonResponse(data)
 
 
@@ -69,20 +69,20 @@ def leave_room(request, code):
     if 'session_key' not in request.session:
         request.session.create()
 
-    if 'code' in request.session and request.session['code'] == code:
-        request.session.pop('code')
+    if 'code' in request.session and request.session.get('code') == code:
+        del request.session['code']
+        request.session.modified = True
         room = Room.objects.filter(code=code).first()
-        if room is not None and room.host:
+        if room is not None and room.host == request.session.session_key:
             room.delete()
+            return Response({"message":"Left room, room deleted"})
         return Response({"message":"Left room"})
     else:
         return Response({"message":"Not in room"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-'''
 @api_view(['POST'])
-def joinRoom(request, code):
+def join_room(request, code):
     if 'session_key' not in request.session:
         request.session.create()
 
@@ -91,4 +91,3 @@ def joinRoom(request, code):
         return Response({"message":"You joined a room"})
 
     return Response({"message":"No such room"}, status=status.HTTP_400_BAD_REQUEST)
-'''

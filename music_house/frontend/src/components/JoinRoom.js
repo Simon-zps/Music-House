@@ -17,7 +17,7 @@ export default function JoinRoom() {
     }
 
     function join() {
-        fetch(`/api/room/${code}`,{
+        fetch(`/api/join-room/${code}`,{
             method:"POST",
             headers: {
                 'Content-Type':'application/json'
@@ -67,5 +67,7 @@ export default function JoinRoom() {
                 </Button>
             </Grid>
         </Grid>
+
+        
     );
 }

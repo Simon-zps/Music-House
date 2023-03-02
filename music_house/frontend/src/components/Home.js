@@ -2,7 +2,7 @@ import React from "react";
 import JoinRoom from "./JoinRoom";
 import CreateRoom from "./CreateRoom";
 import Room from "./Room";
-import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import { Grid, Typography, Button, ButtonGroup } from '@material-ui/core';
 import { useState, useEffect } from "react";
 
@@ -13,7 +13,7 @@ export default function Home() {
     
     useEffect(() => {
         async function fetchCode() {
-            const response = await fetch('api/user-in-room');
+            const response = await fetch('/api/user-in-room');
             const data = await response.json();
             setCode(data.code);
             console.log(data.code);
@@ -45,11 +45,7 @@ export default function Home() {
     return (
         <Router>
             <Routes>
-                {code ? (
-                <Route path="/" element={<Navigate to={`/room/${code}`} replace />} />) : (
                 <Route path="/" element={renderHome()} />
-                )}
-
                 <Route path="/join-room" element={<JoinRoom />} /> 
                 <Route path="/create-room" element={<CreateRoom />} />
                 <Route path="/room/:code" element={<Room />} />
@@ -57,3 +53,7 @@ export default function Home() {
         </Router>
     );
 }
+/*{code ? (
+                <Route path="/" element={<Navigate to={`/room/${code}`}/>} />) : (
+                <Route path="/" element={renderHome()} />
+                )}*/

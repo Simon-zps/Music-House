@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Room
-from .serializers import RoomSerializer, CreateRoomSerializer
+from .serializers import RoomSerializer, CreateRoomSerializer, UpdateRoomSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -51,6 +51,8 @@ def create_room(request):
 
         request.session['code'] = room.code
         return Response(RoomSerializer(room).data)
+    
+    return Response({"Error:":"Submitted data is invalid"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -92,3 +94,38 @@ def join_room(request, code):
         return Response({"message":"You joined a room"})
 
     return Response({"message":"No such room"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def update_room(request):
+
+    # Even though the update_room view is almost identical to create_room, it serves seperate
+    # purposes, also it might be helpful to differentiate endpoints when adding more features
+
+    if not request.session.exists(request.session.session_key):
+        request.session.create()
+
+    serializer = UpdateRoomSerializer(data=request.data)
+
+    if serializer.is_valid():
+        user = request.session.session_key
+        code = serializer.validated_data.get('code')
+        votes_to_skip = serializer.validated_data.get('votes_to_skip')
+        guest_pause_permission = serializer.validated_data.get('guest_pause_permission')
+
+        room = Room.objects.filter(code=code).first()
+
+        if room.host != user:
+            return Response({"Error":"You're not authorized to change settings!"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if room:
+            room.code = code
+            room.votes_to_skip = votes_to_skip
+            room.guest_pause_permission = guest_pause_permission
+            room.save(update_fields=['code', 'votes_to_skip','guest_pause_permission'])
+            request.session['code'] = room.code
+            return Response(UpdateRoomSerializer(room).data)
+        else:
+            return Response({"Error:":"Room not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    return Response({"Error:":"Submitted data is invalid"}, status=status.HTTP_400_BAD_REQUEST)

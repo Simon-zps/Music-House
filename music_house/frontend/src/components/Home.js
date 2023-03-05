@@ -73,7 +73,7 @@ export default function Home() {
                 <Route path="/" element={renderHome()} />
                 )}
                 <Route path="/join-room" element={<JoinRoom />} /> 
-                <Route path="/create-room" element={<CreateRoom />} />
+                <Route path="/create-room" element={<CreateRoom votesToSkip={2}/>} />
                 <Route path="/room/:code" element={<Room code={code} onChange={handleChangeCode}/>} />
             </Routes>
         </Router>

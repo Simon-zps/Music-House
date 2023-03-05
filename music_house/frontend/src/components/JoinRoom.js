@@ -11,7 +11,7 @@ export default function JoinRoom() {
         setCode(e.target.value);
     }
 
-
+    const [error, setError] = useState("")
     function join() {
         fetch(`/api/join-room/${code}`,{
             method:"POST",
@@ -34,6 +34,7 @@ export default function JoinRoom() {
     })
     .catch(error => {
         console.error("Wrong code", error);
+        setError(error);
     });
     }
 

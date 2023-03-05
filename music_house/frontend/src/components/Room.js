@@ -6,6 +6,7 @@ import CreateRoom from "./CreateRoom";
 export default function Room(props) {
 
     let {code} = useParams();
+    const [message, setMessage] = useState("");
     const [votesToSkip, setVotesToSkip] = useState(2);
     const [guestPausePermission, setGuestPausePermission] = useState(true);
     const [isHost, setIsHost] = useState(true);
@@ -27,7 +28,7 @@ export default function Room(props) {
             setVotesToSkip(data.votes_to_skip);
             console.log(data);
         });
-    }, []);
+    }, [message]);
 
     function handleChangeCode(newValue) {
         props.onChange(newValue);
@@ -53,7 +54,7 @@ export default function Room(props) {
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} align="center">
-                    <CreateRoom update={true} votesToSkip={votesToSkip} guestPausePermission={guestPausePermission} code={code}></CreateRoom>
+                    <CreateRoom setMessage={setMessage} message={message} update={true} votesToSkip={votesToSkip} guestPausePermission={guestPausePermission} code={code}></CreateRoom>
                 </Grid>
                 <Grid item xs={12} align="center">
                     <Button variant="contained" color="primary" onClick={()=>setShowSettings(false)}>Close</Button>

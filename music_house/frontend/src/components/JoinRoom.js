@@ -11,10 +11,6 @@ export default function JoinRoom() {
         setCode(e.target.value);
     }
 
-    const [error, setError] = useState("")
-    function handleError(e) {
-        setError(e.target.value);
-    }
 
     function join() {
         fetch(`/api/join-room/${code}`,{
@@ -30,8 +26,6 @@ export default function JoinRoom() {
     .then((response) => {
         if (response.ok) {
             window.location.href = `/room/${code}`;
-        }else{
-            setError("Wrong code");
         }
         return response.json()
     })

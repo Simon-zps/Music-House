@@ -14,7 +14,8 @@ class CreateRoomSerializer(serializers.ModelSerializer):
 
 class UpdateRoomSerializer(serializers.ModelSerializer):
 
-    code = serializers.CharField(max_length=8, validators=[UniqueValidator(queryset=Room.objects.all())], default=generate_unique_code)
+    #code = serializers.CharField(max_length=8, validators=[UniqueValidator(queryset=Room.objects.all())], default=generate_unique_code)
+    code = serializers.CharField(max_length=8, validators=[])
 
     class Meta:
         model = Room

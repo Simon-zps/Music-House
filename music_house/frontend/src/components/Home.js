@@ -74,7 +74,7 @@ export default function Home() {
                 )}
                 <Route path="/join-room" element={<JoinRoom />} /> 
                 <Route path="/create-room" element={<CreateRoom votesToSkip={2}/>} />
-                <Route path="/room/:code" element={<Room code={code} onChange={handleChangeCode}/>} />
+                <Route path="/room/:code" element={<Room onChange={handleChangeCode}/>} />
             </Routes>
         </Router>
     );

@@ -10,6 +10,7 @@ export default function Room(props) {
     const [votesToSkip, setVotesToSkip] = useState(2);
     const [guestPausePermission, setGuestPausePermission] = useState(true);
     const [isHost, setIsHost] = useState(true);
+    const [isAuthenticated, setAuthenticated] = useState(false);
     const [showSettings, setShowSettings] = useState(false); // relates to showing the actual settings page, not button
     
     //We need to fetch data regarding that code and display info, useEffect with empty array runs once
@@ -27,6 +28,9 @@ export default function Room(props) {
             setIsHost(data.is_host);
             setVotesToSkip(data.votes_to_skip);
             console.log(data);
+            if(data.is_host){
+                authenticateSpotifyUser();
+            }
         });
     }, [message]);
 
@@ -49,6 +53,20 @@ export default function Room(props) {
         });
     }
 
+    function authenticateSpotifyUser(){
+        fetch('/spotify/is-auth')
+        .then(response => response.json())
+        .then(data=>{
+            setAuthenticated(data.status);
+            if(!data.status){
+                fetch('/spotify/get-auth')
+                .then(response=>response.json())
+                .then((data)=>{
+                    window.location.replace(data.url);
+                });
+            }
+        });
+    }
 
     if(showSettings) {
         return (

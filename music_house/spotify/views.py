@@ -8,6 +8,8 @@ from django.shortcuts import redirect
 from . import utils
 
 
+# First call - passing client ID, scopes and redirect URI, starts the process of authenticating
+# user and gets the user's authorization to access data
 @api_view(['GET'])
 def get_auth(request):
     authorization_scopes = 'user-read-playback-state user-modify-playback-state user-read-currently-playing'
@@ -22,6 +24,8 @@ def get_auth(request):
     return Response({'url':url})
 
 
+# Second call - passing authorization code returned by the first call, and secret_key
+# to get access and refresh tokens
 @api_view(['GET'])
 def spotify_callback(request):
     # Get authorization code and once access is granted, get access and refresh tokens

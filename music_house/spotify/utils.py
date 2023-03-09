@@ -29,7 +29,7 @@ def is_spotify_authenticated(session_id):
         return True
     return False
 
-
+# Third call - passing refresh_token to generate a new access token
 def refresh_spotify_token(token):
     url = 'https//accounts.spotify.com/api/token'
     response = post(url, data={

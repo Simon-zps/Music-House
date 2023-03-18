@@ -72,6 +72,8 @@ def leave_room(request, code):
         request.session.create()
 
     if 'code' in request.session and request.session.get('code') == code:
+        #request.session.cycle_key()
+        #Also invalidate spotify access token TODO
         del request.session['code']
         request.session.modified = True
         room = Room.objects.filter(code=code).first()

@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { Grid, Button, Typography } from '@material-ui/core';
 import CreateRoom from "./CreateRoom";
+import Player from "./Player";
+
 export default function Room(props) {
 
     let {code} = useParams();
@@ -12,10 +14,13 @@ export default function Room(props) {
     const [isHost, setIsHost] = useState(true);
     const [isAuthenticated, setAuthenticated] = useState(false);
     const [showSettings, setShowSettings] = useState(false); // relates to showing the actual settings page, not button
+    const [song, setSong] = useState("");
     
     //We need to fetch data regarding that code and display info, useEffect with empty array runs once
 
     useEffect(() => {
+        getCurrentSong();
+
         fetch(`/api/room/${code}`,{
             method:'GET',
             headers:{
@@ -32,7 +37,23 @@ export default function Room(props) {
                 authenticateSpotifyUser();
             }
         });
+        
     }, [message]);
+
+    function getCurrentSong() {
+        fetch("/spotify/current-song")
+            .then(response => {
+                if (!response.ok) {
+                    return;
+                }
+                return response.json();
+                
+            })
+            .then((data) => {
+                setSong(data);
+                console.log("Song:", data.title);
+            });
+    }
 
     function handleChangeCode(newValue) {
         props.onChange(newValue);
@@ -87,15 +108,11 @@ export default function Room(props) {
             <Grid item xs={12} align="center">
                 <Typography variant="h4" component="h4">Room code: {code}</Typography>
             </Grid>
-            <Grid item xs={12} align="center">
-                <Typography variant="h5" component="h5">Guest can pause: {guestPausePermission.toString()}</Typography>
-            </Grid>
-            <Grid item xs={12} align="center">
-                <Typography variant="h5" component="h5">Votes to skip: {votesToSkip}</Typography>
-            </Grid>
 
+            <Player {...song}/>
+            
             <Grid item xs={12} align="center">
-                <Typography variant="h5" component="h5">Is Host: {isHost.toString()}</Typography>
+                <Typography variant="h4" component="h4">Song: {song.title}</Typography>
             </Grid>
 
             { isHost && (

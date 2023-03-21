@@ -87,9 +87,35 @@ def get_current_song(request):
     host = room.host
     endpoint = "player"
     response = utils.execute_spotify_api_request(host, endpoint)
+
     if 'error' in response or 'item' not in response:
         return Response({"Error":"No content"}, status=status.HTTP_204_NO_CONTENT)
+    
+    item = response.get('item')
+    
+    item = response.get('item')
+    duration = item.get('duration_ms')
+    progress = response.get('progress_ms')
+    album_cover = item.get('album').get('images')[0].get('url') # get prevents potential NoneType errors
+    is_playing = response.get('is_playing')
+    song_id = item.get('id')
+    href = item.get('href')
 
-    return Response(response)
+    artists = item.get('artists')
+    artist_string = ', '.join(artist.get('name') for artist in artists)
 
+    song = {
+            'title': item.get('name'),
+            'artist': artist_string,
+            'duration': duration,
+            'progress': progress,
+            'image_url': album_cover,
+            'is_playing': is_playing,
+            'votes_required': room.votes_to_skip, 
+            'id': song_id,
+            'song': True,
+            'href': href,
+        }
+    print(href)
 
+    return Response(song)

@@ -6,5 +6,7 @@ urlpatterns = [
     path('redirect-auth', views.spotify_callback, name="spotify_callback"),
     path('is-auth', views.is_authenticated, name="is_authenticated"),
     path('current-song', views.get_current_song, name="get_current_song"),
+    path('pause', views.pause_song, name='pause_song'),
+    path('play', views.play_song, name='play_song'),
     path('', include(('frontend.urls', 'frontend'), namespace='frontend')),
 ]

@@ -18,9 +18,8 @@ export default function Room(props) {
     
     //We need to fetch data regarding that code and display info, useEffect with empty array runs once
 
-    useEffect(() => {
-        getCurrentSong();
 
+    useEffect(() => {
         fetch(`/api/room/${code}`,{
             method:'GET',
             headers:{
@@ -37,6 +36,14 @@ export default function Room(props) {
                 authenticateSpotifyUser();
             }
         });
+
+        getCurrentSong();
+        const intervalId = setInterval(() => {
+            getCurrentSong();
+            console.log("refreshing");
+        }, 2000); // fetch song data every 5 seconds
+        return () => clearInterval(intervalId);
+        // clean up the interval when component is unmounted
         
     }, [message]);
 

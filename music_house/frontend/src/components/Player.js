@@ -5,7 +5,28 @@ import { useState, useEffect } from "react";
 
 export default function Player(props) {
 
+    const [isPlayingClicked, setPlayingClicked] = useState(false);
     const songProgress = (props.progress / props.duration) * 100;
+
+    async function pauseSong(){
+        const response = await fetch('/spotify/pause', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return await response.text();
+    }
+
+    async function playSong(){
+        const response = await fetch('/spotify/play', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return await response.text();;
+    }
 
     return (
         <Card variant="outlined" style={{ width: '100%' }}>
@@ -24,9 +45,17 @@ export default function Player(props) {
                     </Typography>
     
                     <div>
-                        <IconButton>
-                            {props.is_playing ? <Pause/> : <PlayArrow/> }
-                        </IconButton>
+                    <IconButton onClick={async () => {
+                        if (isPlayingClicked) {
+                            pauseSong();
+                            setPlayingClicked(false);
+                        } else {
+                            playSong();
+                            setPlayingClicked(true);
+                        }
+                    }}>
+                        { !isPlayingClicked ? <Pause/> : <PlayArrow/> }
+                    </IconButton>
     
                         <IconButton>
                             <SkipNext/>

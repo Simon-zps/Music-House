@@ -93,3 +93,9 @@ def execute_spotify_api_request(host, endpoint, post_=False, put_=False):
         print(f'Request error: {e}')
         return {'error': 'Problem with request'}
 
+
+def pause(session_id):
+    return execute_spotify_api_request(session_id, "player/play", put_=True)
+
+def play(session_id):
+    return execute_spotify_api_request(session_id, "player/pause", put_=True)

@@ -119,3 +119,23 @@ def get_current_song(request):
     print(href)
 
     return Response(song)
+
+
+@api_view(['PUT'])
+def pause_song(request):
+    room = Room.objects.filter(code=request.session.get('code')).first()
+    if request.session.session_key == room.host or room.guest_pause_permission:
+        utils.pause(room.host)
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
+    return Response({"Message":"Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['PUT'])
+def play_song(request):
+    room = Room.objects.filter(code=request.session.get('code')).first()
+    if request.session.session_key == room.host or room.guest_pause_permission:
+        utils.play(room.host)
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
+    return Response({"Message":"Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
+

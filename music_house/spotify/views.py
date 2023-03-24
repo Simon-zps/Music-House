@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from . import utils
 from api.models import Room
 from .models import Token
+from .models import Vote
 import datetime
 import pytz
 from django.conf import settings
@@ -103,6 +104,7 @@ def get_current_song(request):
 
     artists = item.get('artists')
     artist_string = ', '.join(artist.get('name') for artist in artists)
+    votes_submitted = len(Vote.objects.filter(room=room, song_id=song_id))
 
     song = {
             'title': item.get('name'),
@@ -111,13 +113,16 @@ def get_current_song(request):
             'progress': progress,
             'image_url': album_cover,
             'is_playing': is_playing,
-            'votes_required': room.votes_to_skip, 
+            'votes_required': room.votes_to_skip,
+            'votes_submitted':votes_submitted, 
             'id': song_id,
             'song': True,
             'href': href,
         }
     print(href)
 
+
+    utils.update_room_song(room, song_id)
     return Response(song)
 
 
@@ -139,3 +144,20 @@ def play_song(request):
     return Response({"Message":"Forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
 
+@api_view(['POST'])
+def skip_song(request):
+    room = Room.objects.filter(code=request.session.get('code')).first()
+    votes_required = room.votes_to_skip
+    votes = Vote.objects.filter(room=room, song_id=room.current_song)
+
+    if request.session.session_key == room.host or len(votes) >= votes_required:
+        # skip song and reset votes
+        utils.skip(room.host)
+        votes.delete()
+    
+    else:
+        # register new vote 
+        vote = Vote(user=request.session.session_key, song_id=room.current_song, room=room )
+        vote.save()
+
+    return Response({}, status.HTTP_204_NO_CONTENT)

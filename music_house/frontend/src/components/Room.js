@@ -18,6 +18,7 @@ export default function Room(props) {
     
     //We need to fetch data regarding that code and display info, useEffect with empty array runs once
 
+    // TODO Use of async/await: When working with promises, it's better to use async/await instead of .then() for better readability and error handling.
 
     useEffect(() => {
         fetch(`/api/room/${code}`,{
@@ -109,7 +110,7 @@ export default function Room(props) {
         );
     }
     
-
+    
     return (
         <Grid container spacing={1}>
             <Grid item xs={12} align="center">

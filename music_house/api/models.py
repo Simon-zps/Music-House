@@ -22,4 +22,5 @@ class Room(models.Model):
     host = models.CharField(max_length=50, unique=True)
     guest_pause_permission = models.BooleanField(default=False)
     votes_to_skip = models.IntegerField(default=1)
+    current_song = models.CharField(max_length=50, null=True)
     created = models.DateTimeField(auto_now_add=True)

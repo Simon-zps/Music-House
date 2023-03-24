@@ -8,6 +8,16 @@ export default function Player(props) {
     const [isPlayingClicked, setPlayingClicked] = useState(false);
     const songProgress = (props.progress / props.duration) * 100;
 
+    async function skipSong(){
+        const response = await fetch('/spotify/skip', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return await response.text();
+    }
+
     async function pauseSong(){
         const response = await fetch('/spotify/pause', {
             method: 'PUT',
@@ -56,9 +66,9 @@ export default function Player(props) {
                     }}>
                         { !isPlayingClicked ? <Pause/> : <PlayArrow/> }
                     </IconButton>
-    
+                        {props.votes_submitted} / {props.votes_required}
                         <IconButton>
-                            <SkipNext/>
+                            <SkipNext onClick={skipSong}/>
                         </IconButton>
                     </div>
                 </Grid>

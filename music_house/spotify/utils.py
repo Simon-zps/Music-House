@@ -1,4 +1,4 @@
-from .models import Token
+from .models import Token, Vote
 from django.utils import timezone
 from datetime import timedelta
 from credentials import CLIENT_ID, CLIENT_SECRET
@@ -99,3 +99,15 @@ def pause(session_id):
 
 def play(session_id):
     return execute_spotify_api_request(session_id, "player/pause", put_=True)
+
+def skip(session_id):
+    return execute_spotify_api_request(session_id, "player/next", post_=True)
+
+
+def update_room_song(room, song_id):
+    song = room.current_song
+
+    if song != song_id:
+        room.current_song = song_id
+        room.save(update_fields=['current_song'])
+        votes = Vote.objects.filter(room=room).delete()
